@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deteksi Penyakit Mentimun</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(to right, #f4f4f4, #e8f5e9);
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      h2 {
+        color: #2e7d32;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      form {
+        width: 100%;
+        max-width: 450px;
+        background-color: white;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+      }
+
+      label {
+        font-weight: 600;
+      }
+
+      input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      button {
+        background-color: #2e7d32;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        transition: background 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #1b5e20;
+      }
+
+      img {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-top: 20px;
+        border: 2px solid #ccc;
+      }
+
+      .result {
+        margin-top: 16px;
+        font-size: 15px;
+        background-color: #f1f8e9;
+        border: 1px solid #c5e1a5;
+        border-radius: 12px;
+        padding: 16px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .result p {
+        margin: 10px 0;
+      }
+
+      h3 {
+        color: #33691e;
+        text-align: center;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+
+        form {
+          padding: 16px;
+        }
+
+        .result {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h2>📸 Deteksi Penyakit Daun Mentimun</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+      <label for="image">Unggah atau Ambil Foto Daun:</label>
+      <input
+        type="file"
+        accept="image/*"
+        name="image"
+        id="image"
+        capture="environment"
+        required
+      />
+      <button type="submit">Deteksi Sekarang</button>
+    </form>
+
+    {% if image_url %}
+    <div style="width: 100%; max-width: 450px">
+      <h3>🧪 Hasil Deteksi:</h3>
+      <img src="{{ image_url }}" alt="Hasil Deteksi" />
+      {% if result %}
+      <div class="result">
+        {% for label, score in result %}
+        <p><strong>{{ label }}</strong> ({{ '%.2f'|format(score * 100) }}%)</p>
+        {% if score * 100 >= 80 %}
+        <p>
+          Dengan tingkat kepercayaan sebesar {{ '%.2f'|format(score * 100) }}%,
+          model memiliki tingkat keyakinan tinggi dalam mendeteksi
+          <strong>{{ label }}</strong>.
+        </p>
+        {% elif score * 100 >= 60 %}
+        <p>
+          Model mendeteksi kemungkinan
+          <strong>{{ label }}</strong> dengan tingkat kepercayaan sebesar {{
+          '%.2f'|format(score * 100) }}%.
+        </p>
+        {% else %}
+        <p>
+          Tingkat kepercayaan model terhadap deteksi sebesar
+          <strong>{{ label }}</strong> adalah {{ '%.2f'|format(score * 100) }}%.
+        </p>
+        {% endif %} {% endfor %}
+      </div>
+      {% else %}
+      <p style="text-align: center">Tidak terdeteksi penyakit pada gambar.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </body>
+</html>
