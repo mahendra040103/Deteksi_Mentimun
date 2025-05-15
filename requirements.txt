@@ -6,3 +6,8 @@ numpy
 pandas
 gdown
 gunicorn
+
+Werkzeug
+Jinja2
+itsdangerous
+MarkupSafe
